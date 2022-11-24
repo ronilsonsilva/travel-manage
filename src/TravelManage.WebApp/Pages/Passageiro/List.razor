@@ -1,0 +1,91 @@
+﻿@page "/passageiros"
+@using TravelManage.Domain.Shared.DTO;
+@using TravelManage.WebApp.Services;
+
+
+@inject NavigationManager NavigationManager
+
+<PageTitle>Passageiros</PageTitle>
+
+
+
+<h1>Passageiros</h1>
+
+
+@if (Passageiros == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-2">
+            <button class="btn btn-primary" @onclick="Create">Novo</button>
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>E-mail</th>
+                <th>Telefone</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var passageiro in Passageiros)
+            {
+                <tr>
+                    <td>@passageiro.Id</td>
+                    <td>@passageiro.Nome</td>
+                    <td>@passageiro.Cpf</td>
+                    <td>@passageiro.Email</td>
+                    <td>@passageiro.Telefone</td>
+                    <td>
+                        <button @onclick="(()=> Edit(passageiro.Id))" class="btn btn-outline-secondary">
+                            Edit
+                        </button>
+                    </td>
+                    <td>
+                        <button @onclick="(()=> Delete(passageiro.Id))" class="btn btn-outline-danger">
+                            Delete
+                        </button>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IList<PassageiroDto>? Passageiros { get; set; }
+
+    [Inject]
+    private IPassageiroServices PassageiroServices { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        Passageiros = await PassageiroServices.GetList();
+    }
+
+    public void Create()
+    {
+        NavigationManager.NavigateTo("create-passageiro");
+    }
+
+    public void Edit(int id)
+    {
+        NavigationManager.NavigateTo("editar-passageiro/" + id);
+    }
+
+    public async Task Delete(int id)
+    {
+        await PassageiroServices.Delete(id);
+        Passageiros = await PassageiroServices.GetList();
+    }
+}

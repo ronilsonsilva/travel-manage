@@ -1,0 +1,93 @@
+﻿@page "/motoristas"
+@using TravelManage.Domain.Shared.DTO;
+@using TravelManage.WebApp.Services;
+
+
+@inject NavigationManager NavigationManager
+
+<PageTitle>Motoristas</PageTitle>
+
+
+
+<h1>Motoristas</h1>
+
+
+@if (Motoristas == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-2">
+            <button class="btn btn-primary" @onclick="Create">Novo</button>
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>E-mail</th>
+                <th>Telefone</th>
+                <th>Cnh</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var motorista in Motoristas)
+            {
+                <tr>
+                    <td>@motorista.Id</td>
+                    <td>@motorista.Nome</td>
+                    <td>@motorista.Cpf</td>
+                    <td>@motorista.Email</td>
+                    <td>@motorista.Telefone</td>
+                    <td>@motorista.Cnh</td>
+                    <td>
+                        <button @onclick="(()=> Edit(motorista.Id))" class="btn btn-outline-secondary">
+                            Edit
+                        </button>
+                    </td>
+                    <td>
+                        <button @onclick="(()=> Delete(motorista.Id))" class="btn btn-outline-danger">
+                            Delete
+                        </button>
+                    </td>
+                    
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IList<MotoristaDto>? Motoristas { get; set; }
+
+    [Inject]
+    private IMotoristaServices MotoristaServices { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        Motoristas = await MotoristaServices.GetList();
+    }
+
+    public void Create()
+    {
+        NavigationManager.NavigateTo("create-motorista");
+    }
+
+    public void Edit(int id)
+    {
+        NavigationManager.NavigateTo("editar-motorista/" + id);
+    }
+
+    public async Task Delete(int id)
+    {
+        await MotoristaServices.Delete(id);
+        Motoristas = await MotoristaServices.GetList();
+    }
+}

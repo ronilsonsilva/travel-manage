@@ -1,0 +1,130 @@
+﻿@page "/editar-proprietario/{id}"
+@using TravelManage.Domain.Shared.DTO;
+@using TravelManage.WebApp.Services;
+@using global::AutoMapper;
+
+@inject NavigationManager NavigationManager
+@inject IMapper _mapper
+
+<PageTitle>Editar Proprietário</PageTitle>
+
+<h1>Editar Proprietário</h1>
+
+
+
+<EditForm Model="@model" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="nome">Nome</label>
+                <InputText id="nome" @bind-Value="model.Nome" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="cpf">CPF</label>
+                <InputText id="cpf" @bind-Value="model.Cpf" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="cnh">CNH</label>
+                <InputText id="cnh" @bind-Value="model.Cnh" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="telefone">Telefone</label>
+                <InputText id="telefone" @bind-Value="model.Telefone" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="sexo">Sexo</label>
+                <InputSelect id="sexo" @bind-Value="model.Sexo" class="form-control">
+                    @foreach (var value in Enum.GetValues<SexoEnumDto>())
+                    {
+                        <option value="@value">@value</option>
+                    }
+                </InputSelect>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <InputText id="email" @bind-Value="model.Email" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="endereco">Endereço</label>
+                <InputText id="endereco" @bind-Value="model.Endereco" class="form-control" />
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="banco">Banco</label>
+                <InputNumber id="banco" @bind-Value="model.Banco" class="form-control" />
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="agencia">Agência</label>
+                <InputNumber id="agencia" @bind-Value="model.Agencia" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="conta">Conta</label>
+                <InputNumber id="conta" @bind-Value="model.Conta" class="form-control" />
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="row m-1">
+        <div class="col-md-12">
+            <div class="align-content-center">
+                <button type="submit" class="btn btn-primary btn-lg">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+</EditForm>
+
+
+@code {
+
+    [Parameter]
+    public string id { get; set; }
+
+    [Inject]
+    public IProprietarioServices ProprietarioServices { get; set; }
+
+    private UpdateProprietarioDto model = new UpdateProprietarioDto();
+
+    protected override async Task OnInitializedAsync()
+    {
+        model = _mapper.Map<UpdateProprietarioDto>(await ProprietarioServices.GetById(int.Parse(id)));
+    }
+
+
+    private async void HandleValidSubmit()
+    {
+        await ProprietarioServices.Update(model);
+        NavigationManager.NavigateTo("proprietarios");
+        Console.WriteLine("OnValidSubmit");
+    }
+
+}

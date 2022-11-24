@@ -1,0 +1,52 @@
+﻿@page "/create-tipopagamento"
+@using TravelManage.Domain.Shared.DTO;
+@using TravelManage.WebApp.Services;
+
+@inject NavigationManager NavigationManager
+
+<PageTitle>Criar Tipo de Pagamento</PageTitle>
+
+<h1>Criar Tipo de Pagamento</h1>
+
+
+
+<EditForm Model="@model" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="descricao">Descrição</label>
+                <InputText id="descricao" @bind-Value="model.Descricao" class="form-control" />
+            </div>
+        </div>
+        
+    </div>
+
+
+    <div class="row m-1">
+        <div class="col-md-12">
+            <div class="align-content-center">
+                <button type="submit" class="btn btn-primary btn-lg">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+</EditForm>
+
+
+@code {
+
+    [Inject]
+    public ITipoPagamentoServices TipoPagamentoServices { get; set; }
+
+    private CreateTipoPagamentoDto model = new CreateTipoPagamentoDto();
+
+
+    private async void HandleValidSubmit()
+    {
+        await TipoPagamentoServices.Create(model);
+        NavigationManager.NavigateTo("tipopagamentos");
+        Console.WriteLine("OnValidSubmit");
+    }
+}

@@ -1,0 +1,186 @@
+﻿@page "/editar-viagem/{id}"
+@using TravelManage.Domain.Shared.DTO;
+@using TravelManage.WebApp.Services;
+@using global::AutoMapper;
+
+
+@inject NavigationManager NavigationManager
+@inject IMapper _mapper
+
+<PageTitle>Editar Viagem</PageTitle>
+
+<h1>Editar Viagem</h1>
+
+
+
+<EditForm Model="@model" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="tipo-pagamento">Forma Pagamento</label>
+                <InputSelect id="tipo-pagamento" @bind-Value="model.FormaPagamento" class="form-control">
+                    <option></option>
+                    @foreach (var value in TipoPagamentos)
+                    {
+                        <option value="@value.Codigo">@value.Descricao</option>
+                    }
+                </InputSelect>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="carro">Veículo</label>
+                <InputSelect id="carro" @bind-Value="model.IdVeiculo" class="form-control">
+                    <option></option>
+                    @foreach (var value in Veiculos)
+                    {
+                        <option value="@value.Id">@value.Descricao</option>
+                    }
+                </InputSelect>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="motorista">Motorista</label>
+                <InputSelect id="motorista" @bind-Value="model.IdMotorista" class="form-control">
+                    <option></option>
+                    @foreach (var value in Motoristas)
+                    {
+                        <option value="@value.Id">@value.Nome</option>
+                    }
+                </InputSelect>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="passageiro">Passageiro</label>
+                <InputSelect id="passageiro" @bind-Value="model.IdPassageiro" class="form-control">
+                    <option></option>
+                    @foreach (var value in Passageiros)
+                    {
+                        <option value="@value.Id">@value.Nome</option>
+                    }
+                </InputSelect>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="origem">Origem</label>
+                <InputText id="origem" @bind-Value="model.LocalOrigem" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="destino">Destino</label>
+                <InputText id="destino" @bind-Value="model.LocalDestino" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="qtd-passageiros">Qtd. Passageiros</label>
+                <InputNumber id="qtd-passageiros" @bind-Value="model.QuantidadePassageiros" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="inicio">Inicio</label>
+                <InputDate id="inicio" @bind-Value="model.DataHoraInicio" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="fim">Fim</label>
+                <InputDate id="fim" @bind-Value="model.DataHoraFim" class="form-control" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="valor">Valor</label>
+                <InputNumber id="valor" @bind-Value="model.ValorPagamento" class="form-control" />
+            </div>
+        </div>
+        @* <div class="col-md-3">
+        <div class="form-group">
+        <label for="cancelado-motorista">Motorista Cancelou?</label>
+        <InputCheckbox id="cancelado-motorista" @bind-Value="model.CaceladoMotorista" class="form-control" />
+        </div>
+        </div>
+        <div class="col-md-3">
+        <div class="form-group">
+        <label for="cancelado-passageiro">Passageiro Cancelou?</label>
+        <InputCheckbox id="cancelado-passageiro" @bind-Value="model.CaceladoPassageiro" class="form-control" />
+        </div>
+        </div>*@
+
+    </div>
+
+    <div class="row m-1">
+        <div class="col-md-12">
+            <div class="align-content-center">
+                <button type="submit" class="btn btn-primary btn-lg">Salvar</button>
+            </div>
+
+        </div>
+    </div>
+
+
+</EditForm>
+
+
+
+
+
+@code {
+
+    [Parameter]
+    public string id { get; set; }
+
+    [Inject]
+    public IViagemServices ViagemServices { get; set; }
+
+    [Inject]
+    public IVeiculoServices VeiculoServices { get; set; }
+
+    [Inject]
+    public IMotoristaServices MotoristaServices { get; set; }
+
+    [Inject]
+    public IPassageiroServices PassageiroServices { get; set; }
+
+    [Inject]
+    public ITipoPagamentoServices TipoPagamentoServices { get; set; }
+
+    private UpdateViagemDto model = new UpdateViagemDto();
+
+    private IList<VeiculoDto> Veiculos { get; set; } = new List<VeiculoDto>();
+    private IList<MotoristaDto> Motoristas { get; set; } = new List<MotoristaDto>();
+    private IList<PassageiroDto> Passageiros { get; set; } = new List<PassageiroDto>();
+    private IList<TipoPagamentoDto> TipoPagamentos { get; set; } = new List<TipoPagamentoDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        model = _mapper.Map<UpdateViagemDto>(await ViagemServices.GetById(int.Parse(id)));
+
+        Veiculos = await VeiculoServices.GetList();
+        Motoristas = await MotoristaServices.GetList();
+        Passageiros = await PassageiroServices.GetList();
+        TipoPagamentos = await TipoPagamentoServices.GetList();
+    }
+
+    private async void HandleValidSubmit()
+    {
+        await ViagemServices.Update(model);
+        NavigationManager.NavigateTo("viagens");
+        Console.WriteLine("OnValidSubmit");
+    }
+
+}

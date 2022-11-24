@@ -1,0 +1,92 @@
+﻿@page "/viagens"
+@using TravelManage.Domain.Shared.DTO;
+@using TravelManage.WebApp.Services;
+
+@inject NavigationManager NavigationManager
+
+<PageTitle>Viagens</PageTitle>
+
+
+
+<h1>Viagens</h1>
+
+
+@if (Viagens == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-2">
+            <button class="btn btn-primary" @onclick="CriarViagem">Novo</button>
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Origem</th>
+                <th>Destino</th>
+                <th>Veículo</th>
+                <th>Motorista</th>
+                <th>Passageiro</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var viagem in Viagens)
+            {
+                <tr>
+                    <td>@viagem.Id</td>
+                    <td>@viagem.LocalOrigem</td>
+                    <td>@viagem.LocalDestino</td>
+                    <td>@viagem.PlacaVeiculo</td>
+                    <td>@viagem.Motorista</td>
+                    <td>@viagem.Passageiro</td>
+                    <td>
+                        <button @onclick="(()=> Edit(viagem.Id))" class="btn btn-outline-secondary">
+                            Edit
+                        </button>
+                    </td>
+                    <td>
+                        <button @onclick="(()=> Delete(viagem.Id))" class="btn btn-outline-danger">
+                            Delete
+                        </button>
+                    </td>
+                    
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IList<ListViagemDto>? Viagens { get; set; }
+
+    [Inject]
+    private IViagemServices ViagemServices { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Viagens = await ViagemServices.GetList();
+    }
+
+    public void CriarViagem()
+    {
+        NavigationManager.NavigateTo("create-viagem");
+    }
+
+    public void Edit(int id)
+    {
+        NavigationManager.NavigateTo("editar-viagem/"+id);
+    }
+
+    public async Task Delete(int id)
+    {
+        await ViagemServices.Delete(id);
+        Viagens = await ViagemServices.GetList();
+    }
+
+}

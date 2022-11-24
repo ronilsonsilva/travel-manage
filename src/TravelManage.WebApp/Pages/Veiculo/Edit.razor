@@ -1,0 +1,127 @@
+﻿@page "/editar-veiculo/{id}"
+@using TravelManage.Domain.Shared.DTO;
+@using TravelManage.WebApp.Services;
+@using global::AutoMapper;
+
+@inject NavigationManager NavigationManager
+@inject IMapper _mapper
+
+<PageTitle>Editar Veículo</PageTitle>
+
+<h1>Editar Veículo</h1>
+
+
+
+<EditForm Model="@model" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="marca">Marca</label>
+                <InputText id="marca" @bind-Value="model.Marca" class="form-control" />
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="modelo">Modelo</label>
+                <InputText id="modelo" @bind-Value="model.Modelo" class="form-control" />
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="cor">Cor</label>
+                <InputText id="cor" @bind-Value="model.Cor" class="form-control" />
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="placa">Placa</label>
+                <InputText id="placa" @bind-Value="model.Placa" class="form-control" />
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="potencia">Potência Motor</label>
+                <InputNumber id="potencia" @bind-Value="model.PotenciaMotor" class="form-control" />
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="capacidade">Capacidade Passageiros</label>
+                <InputNumber id="capacidade" @bind-Value="model.CapacidadePass" class="form-control" />
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="combustivel">Tipo Combustível</label>
+                <InputSelect id="combustivel" @bind-Value="model.TipoCombustivel" class="form-control">
+                    @foreach (var value in Enum.GetValues<TipoCombustivelEnumDto>())
+                    {
+                        <option value="@value">@value</option>
+                    }
+                </InputSelect>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="proprietario">Proprietário</label>
+                <InputSelect id="proprietario" @bind-Value="model.IdProprietario" class="form-control">
+                    @foreach (var proprietario in Proprietarios)
+                    {
+                        <option value="@proprietario.Id">@proprietario.Nome</option>
+                    }
+                </InputSelect>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="row m-1">
+        <div class="col-md-12">
+            <div class="align-content-center">
+                <button type="submit" class="btn btn-primary btn-lg">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+</EditForm>
+
+
+@code {
+
+    [Parameter]
+    public string id { get; set; }
+
+
+    [Inject]
+    public IVeiculoServices VeiculoServices { get; set; }
+
+    [Inject]
+    public IProprietarioServices ProprietarioServices { get; set; }
+
+    private UpdateVeiculoDto model = new UpdateVeiculoDto();
+
+    private IList<ProprietarioDto> Proprietarios { get; set; } = new List<ProprietarioDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Proprietarios = await ProprietarioServices.GetList();
+        model = _mapper.Map<UpdateVeiculoDto>(await VeiculoServices.GetById(int.Parse(id)));
+    }
+
+    private async void HandleValidSubmit()
+    {
+        await VeiculoServices.Update(model);
+        NavigationManager.NavigateTo("veiculos");
+        Console.WriteLine("OnValidSubmit");
+    }
+}

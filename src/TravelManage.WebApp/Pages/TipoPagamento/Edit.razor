@@ -1,0 +1,61 @@
+﻿@page "/editar-tipopagamento/{id}"
+@using TravelManage.Domain.Shared.DTO;
+@using TravelManage.WebApp.Services;
+@using global::AutoMapper;
+
+@inject NavigationManager NavigationManager
+@inject IMapper _mapper
+
+<PageTitle>Editar Tipo de Pagamento</PageTitle>
+
+<h1>Editar Tipo de Pagamento</h1>
+
+
+
+<EditForm Model="@model" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="descricao">Descrição</label>
+                <InputText id="descricao" @bind-Value="model.Descricao" class="form-control" />
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="row m-1">
+        <div class="col-md-12">
+            <div class="align-content-center">
+                <button type="submit" class="btn btn-primary btn-lg">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+</EditForm>
+
+
+@code {
+
+    [Parameter]
+    public string id { get; set; }
+
+    [Inject]
+    public ITipoPagamentoServices TipoPagamentoServices { get; set; }
+
+    private UpdateTipoPagamentoDto model = new UpdateTipoPagamentoDto();
+
+    protected override async Task OnInitializedAsync()
+    {
+        model = _mapper.Map<UpdateTipoPagamentoDto>(await TipoPagamentoServices.GetById(int.Parse(id)));
+    }
+
+    private async void HandleValidSubmit()
+    {
+        await TipoPagamentoServices.Update(model);
+        NavigationManager.NavigateTo("tipopagamentos");
+        Console.WriteLine("OnValidSubmit");
+    }
+}

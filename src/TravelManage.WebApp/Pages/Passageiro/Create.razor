@@ -1,0 +1,114 @@
+﻿@page "/create-passageiro"
+@using TravelManage.Domain.Shared.DTO;
+@using TravelManage.WebApp.Services;
+
+@inject NavigationManager NavigationManager
+
+<PageTitle>Criar Passageiro</PageTitle>
+
+<h1>Criar Passageiro</h1>
+
+
+
+<EditForm Model="@model" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="nome">Nome</label>
+                <InputText id="nome" @bind-Value="model.Nome" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="cpf">CPF</label>
+                <InputText id="cpf" @bind-Value="model.Cpf" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="telefone">Telefone</label>
+                <InputText id="telefone" @bind-Value="model.Telefone" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="sexo">Sexo</label>
+                <InputSelect id="sexo" @bind-Value="model.Sexo" class="form-control">
+                    @foreach (var value in Enum.GetValues<SexoEnumDto>())
+                    {
+                        <option value="@value">@value</option>
+                    }
+                </InputSelect>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <InputText id="email" @bind-Value="model.Email" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="endereco">Endereço</label>
+                <InputText id="endereco" @bind-Value="model.Endereco" class="form-control" />
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="cartao">Cartão de Crédito</label>
+                <InputText id="cartao" @bind-Value="model.CartaoCredito" class="form-control" />
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="bandeira">Bandeira Cartão</label>
+                <InputText id="bandeira" @bind-Value="model.BandeiraCartao" class="form-control" />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="cidade-origem">Cidade Origem</label>
+                <InputText id="cidade-origem" @bind-Value="model.CidadeOrig" class="form-control" />
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="row m-1">
+        <div class="col-md-12">
+            <div class="align-content-center">
+                <button type="submit" class="btn btn-primary btn-lg">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+</EditForm>
+
+
+@code {
+
+    [Inject]
+    public IPassageiroServices PassageiroServices { get; set; }
+
+    private CreatePassageiroDto model = new CreatePassageiroDto();
+
+
+    private async void HandleValidSubmit()
+    {
+        await PassageiroServices.Create(model);
+        NavigationManager.NavigateTo("passageiros");
+        Console.WriteLine("OnValidSubmit");
+    }
+
+}
