@@ -1,0 +1,103 @@
+﻿@page "/faturamento-veiculo"
+@using TravelManage.Domain.Shared.DTO;
+@using TravelManage.Domain.Shared.Inputs;
+@using TravelManage.Domain.Shared.ReportModels;
+@using TravelManage.WebApp.Services;
+
+
+@inject NavigationManager NavigationManager
+
+<PageTitle>Faturamento Veículo</PageTitle>
+
+
+
+<h3>Faturamento Veículo</h3>
+<p>Relatório 3: 3.	Qual o faturamento de cada veículo no mês, ordenando por proprietário, por tipo de pagto e por veículo; ( Nome-proprietario, Placa-veiculo, tipo-pagto, Valor-total-faturado e valor-medio-faturamento);</p>
+
+
+
+@if (Dados == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <EditForm Model="@Input" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="ano">Ano</label>
+                        <InputNumber id="ano" @bind-Value="Input.Ano" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="mes">Mês</label>
+                        <InputNumber id="mes" @bind-Value="Input.Mes" class="form-control" />
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="row m-1">
+                <div class="col-md-12">
+                    <div class="align-content-center">
+                        <button type="submit" class="btn btn-primary btn-lg">Consultar</button>
+                    </div>
+                </div>
+            </div>
+
+        </EditForm>
+    </div>
+
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Proprietário</th>
+                <th>Placa</th>
+                <th>Faturamento</th>
+                <th>Media de Faturamento</th>
+                <th>Qt. Viagens</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Dados)
+            {
+                <tr>
+                    <td>@item.NomeProprietario</td>
+                    <td>@item.PlacaVeiculo</td>
+                    <td>@item.TotalFaturamento</td>
+                    <td>@item.MedioFaturamento</td>
+                    <td>@item.QuantidadeViagem</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IList<FaturamentoVeiculoReport>? Dados { get; set; }
+
+    [Inject]
+    private IReportServices ReportServices { get; set; }
+
+    private PeriodoMesAnoInput Input { get; set; } = new PeriodoMesAnoInput(2022, 10);
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        Dados = await ReportServices.FaturamentoVeiculo(Input);
+    }
+
+    private async void HandleValidSubmit()
+    {
+        //Dados = null;
+        Dados = await ReportServices.FaturamentoVeiculo(Input);
+    }
+}

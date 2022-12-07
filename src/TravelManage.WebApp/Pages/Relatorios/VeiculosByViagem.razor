@@ -1,0 +1,112 @@
+﻿@page "/veiculos-by-viagem"
+@using TravelManage.Domain.Shared.DTO;
+@using TravelManage.Domain.Shared.Inputs;
+@using TravelManage.Domain.Shared.ReportModels;
+@using TravelManage.WebApp.Services;
+
+
+@inject NavigationManager NavigationManager
+
+<PageTitle>Veículos By Viagem</PageTitle>
+
+
+
+<h3>Veículos By Viagem</h3>
+<p>Relatório 1: 1.	Quais os veículos de uma marca (a escolher) fizeram viagens no dia 03/10/2022 entre as 21:00 hs e 24:00 hs   ( Marca , Placa , local de origem, local de destino, nome motorista, nome-passageiro);</p>
+
+
+
+@if (Dados == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <EditForm Model="@Input" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="placa">Placa</label>
+                        <InputText id="placa" @bind-Value="Input.Placa" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="inicio">Início</label>
+                        <InputDate id="inicio" @bind-Value="Input.Inicio" class="form-control" />
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="fim">Fim</label>
+                        <InputDate id="fim" @bind-Value="Input.Fim" class="form-control" />
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="row m-1">
+                <div class="col-md-12">
+                    <div class="align-content-center">
+                        <button type="submit" class="btn btn-primary btn-lg">Consultar</button>
+                    </div>
+                </div>
+            </div>
+
+        </EditForm>
+    </div>
+
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Marca</th>
+                <th>Placa</th>
+                <th>Passageiro</th>
+                <th>Motorista</th>
+                <th>Origem</th>
+                <th>Destino</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Dados)
+            {
+                <tr>
+                    <td>@item.Marca</td>
+                    <td>@item.Placa</td>
+                    <td>@item.NomePassageiro</td>
+                    <td>@item.NomeMotorista</td>
+                    <td>@item.LocalOrigem</td>
+                    <td>@item.LocalDestino</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IList<VeiculosByViagemReport>? Dados { get; set; }
+
+    [Inject]
+    private IReportServices ReportServices { get; set; }
+
+    private VeiculoByIntervaloInput Input { get; set; } = new VeiculoByIntervaloInput("7IC86U2", new DateTime(2022, 10, 01), new DateTime(2022, 10, 30));
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        Dados = await ReportServices.VeiculosByViagem(Input);
+    }
+
+    private async void HandleValidSubmit()
+    {
+        //Dados = null;
+        Dados = await ReportServices.VeiculosByViagem(Input);
+    }
+}

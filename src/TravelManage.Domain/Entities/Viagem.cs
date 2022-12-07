@@ -16,6 +16,14 @@ namespace TravelManage.Domain.Entities
             FormaPagamento = formaPagamento;
         }
 
+        public Viagem(int idPassageiro, int idMotorista, int idVeiculo, string localOrigem, string localDestino, DateTime dataHoraInicio, int quantidadePassageiros, int formaPagamento, DateTime? dataHoraFim, decimal valorPagamento, bool caceladoMotorista, bool caceladoPassageiro) : this(idPassageiro, idMotorista, idVeiculo, localOrigem, localDestino, dataHoraInicio, quantidadePassageiros, formaPagamento)
+        {
+            DataHoraFim = dataHoraFim;
+            ValorPagamento = valorPagamento;
+            CaceladoMotorista = caceladoMotorista;
+            CaceladoPassageiro = caceladoPassageiro;
+        }
+
         protected Viagem() { }
 
         public int IdPassageiro { get; set; }

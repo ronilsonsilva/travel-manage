@@ -9,7 +9,6 @@ using TravelManage.Domain.Contracts.DomainServices;
 using TravelManage.Domain.Contracts.Repositories;
 using TravelManage.Domain.DomainServices;
 using TravelManage.Domain.Entities;
-using TravelManage.Domain.Shared.DTO;
 using TravelManage.Infra.Data.Context;
 using TravelManage.Infra.Data.Repositories;
 
@@ -47,16 +46,11 @@ namespace TravelManage.Infra.Ioc
 
             services.AddScoped(typeof(IRepository<TipoPagamento>), typeof(TipoPagamentoRepository));
             services.AddScoped(typeof(IRepository<Viagem>), typeof(ViagemRepository));
-            
 
-            
 
-            //services.AddScoped(typeof(IApplicationServices<PassageiroDto, CreatePassageiroDto, UpdatePassageiroDto, PassageiroDto>), typeof(ApplicationServices<Passageiros, PassageiroDto, CreatePassageiroDto, CreatePassageiroDto, PassageiroDto>));
-            //services.AddScoped(typeof(IApplicationServices<MotoristaDto, CreateMotoristaDto, UpdateMotoristaDto, MotoristaDto>), typeof(ApplicationServices<Motoristas, MotoristaDto, CreateMotoristaDto, CreateMotoristaDto, MotoristaDto>));
-            //services.AddScoped(typeof(IApplicationServices<ProprietarioDto, CreateProprietarioDto, UpdateProprietarioDto, ProprietarioDto>), typeof(ApplicationServices<Proprietarios, ProprietarioDto, CreateProprietarioDto, UpdateProprietarioDto, ProprietarioDto>));
-            //services.AddScoped(typeof(IApplicationServices<TipoPagamentoDto, CreateTipoPagamentoDto, UpdateTipoPagamentoDto, TipoPagamentoDto>), typeof(ApplicationServices<TipoPagamento, TipoPagamentoDto, CreateTipoPagamentoDto, UpdateTipoPagamentoDto, TipoPagamentoDto>));
-            //services.AddScoped(typeof(IApplicationServices<VeiculoDto, CreateVeiculoDto, UpdateVeiculoDto, VeiculoDto>), typeof(ApplicationServices<Veiculo, VeiculoDto, CreateVeiculoDto, UpdateVeiculoDto, PassageiroDto>));
-            //services.AddScoped(typeof(IApplicationServices<ViagemDto, CreateViagemDto, UpdateViagemDto, ViagemDto>), typeof(ApplicationServices<Viagem, ViagemDto, CreateViagemDto, UpdateViagemDto, ViagemDto>));
+            services.AddScoped<IReportApplicationServices, ReportApplicationServices>();
+            services.AddScoped<IReportRepository, ReportRepository>();
+            services.AddScoped<ISeedDataApplication, SeedDataApplication>();
 
             #endregion
         }

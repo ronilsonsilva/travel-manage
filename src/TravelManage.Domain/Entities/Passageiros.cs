@@ -2,7 +2,7 @@
 {
     public class Passageiros : Pessoas
     {
-        public Passageiros(string cartaoCredito, string bandeiraCartao, string cidadeOrig)
+        public Passageiros(string cartaoCredito, string bandeiraCartao, string cidadeOrig, string cpf, string nome, string endereco, string telefone, SexoEnum sexo, string email) : base(cpf, nome, endereco, telefone, sexo, email)
         {
             CartaoCredito = cartaoCredito;
             BandeiraCartao = bandeiraCartao;

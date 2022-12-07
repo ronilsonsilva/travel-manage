@@ -33,6 +33,7 @@ builder.Services.AddScoped<IProprietarioServices, ProprietarioServices>();
 builder.Services.AddScoped<ITipoPagamentoServices, TipoPagamentoServices>();
 builder.Services.AddScoped<IVeiculoServices, VeiculoServices>();
 builder.Services.AddScoped<IViagemServices, ViagemServices>();
+builder.Services.AddScoped<IReportServices, ReportServices>();
 builder.Services.AddSingleton(sp => new RestClient(new HttpClient { BaseAddress = new Uri("https://localhost:44345/api") }));
 
 

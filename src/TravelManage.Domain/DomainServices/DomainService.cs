@@ -55,6 +55,11 @@ namespace TravelManage.Domain.DomainServices
             return new Response<bool>(await this._repository.Delete(id));
         }
 
+        public async Task AddRange(IList<TEntity> entities)
+        {
+            await _repository.AddRange(entities);
+        }
+
         #endregion
     }
 }

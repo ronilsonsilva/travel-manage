@@ -17,18 +17,9 @@ namespace TravelManage.Infra.Data.Repositories
 
         public virtual async Task<TEntity> Add(TEntity entity)
         {
-            try
-            {
-                this._context.Set<TEntity>().Add(entity);
-                await this._context.SaveChangesAsync();
-                return entity;
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-            
+            this._context.Set<TEntity>().Add(entity);
+            await this._context.SaveChangesAsync();
+            return entity;
         }
 
         public virtual async Task<TEntity> Update(TEntity entity)
@@ -60,6 +51,12 @@ namespace TravelManage.Infra.Data.Repositories
             if (entityRemover == null) return false;
             this._context.Set<TEntity>().Remove(entityRemover);
             return (await this._context.SaveChangesAsync()) > 0;
+        }
+
+        public async Task AddRange(IList<TEntity> entities)
+        {
+            await _context.Set<TEntity>().AddRangeAsync(entities);
+            await _context.SaveChangesAsync();
         }
     }
 }

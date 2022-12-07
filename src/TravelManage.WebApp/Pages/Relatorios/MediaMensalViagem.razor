@@ -1,0 +1,66 @@
+﻿@page "/media-mensal-viagem"
+@using TravelManage.Domain.Shared.DTO;
+@using TravelManage.Domain.Shared.Inputs;
+@using TravelManage.Domain.Shared.ReportModels;
+@using TravelManage.WebApp.Services;
+
+
+@inject NavigationManager NavigationManager
+
+<PageTitle>Média Mensal</PageTitle>
+
+
+
+<h3>Médiaa Mensal</h3>
+<p>Relatório 4: 4.	Mostrar a média mensal (mês a mês) de viagens, de passageiros de cada sexo.</p>
+
+
+
+@if (Dados == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Ano</th>
+                <th>Mes</th>
+                <th>Qtd. Viagens Masculino</th>
+                <th>Qtd. Viagens Feminina</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Dados)
+            {
+                <tr>
+                    <td>@item.Ano</td>
+                    <td>@item.Mes</td>
+                    <td>@item.ViagensMasculino</td>
+                    <td>@item.ViagensFeminino</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IList<MediaMensalViagemReport>? Dados { get; set; }
+
+    [Inject]
+    private IReportServices ReportServices { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        Dados = await ReportServices.MediaMensalViagemReports();
+    }
+
+    private async void HandleValidSubmit()
+    {
+        //Dados = null;
+        Dados = await ReportServices.MediaMensalViagemReports();
+    }
+}

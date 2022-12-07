@@ -2,7 +2,7 @@
 {
     public class Proprietarios : Pessoas
     {
-        public Proprietarios(string cnh, int banco, int agencia, int conta)
+        public Proprietarios(string cnh, int banco, int agencia, int conta, string cpf, string nome, string endereco, string telefone, SexoEnum sexo, string email) : base (cpf, nome, endereco, telefone, sexo, email)
         {
             Cnh = cnh;
             Banco = banco;

@@ -16,8 +16,8 @@ namespace TravelManage.Infra.Data.Repositories
                 .Include(x => x.Veiculo)
                 .Include(x => x.Motorista)
                 .Include(x => x.Passageiro)
+                .Take(100)
                 .ToListAsync(); ;
         }
     }
-
 }

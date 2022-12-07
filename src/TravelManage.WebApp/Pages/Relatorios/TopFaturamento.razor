@@ -1,0 +1,99 @@
+﻿@page "/top-faturamento"
+@using TravelManage.Domain.Shared.DTO;
+@using TravelManage.Domain.Shared.Inputs;
+@using TravelManage.Domain.Shared.ReportModels;
+@using TravelManage.WebApp.Services;
+
+
+@inject NavigationManager NavigationManager
+
+<PageTitle>Top Faturamento</PageTitle>
+
+
+
+<h3>Top Faturamento</h3>
+<p>Relatório 2: 2.	Os 20 maiores faturamentos de um determinado mês (a escolher);</p>
+
+
+
+@if (Dados == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <EditForm Model="@Input" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="ano">Ano</label>
+                        <InputNumber id="ano" @bind-Value="Input.Ano" class="form-control" />
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="mes">Mês</label>
+                        <InputNumber id="mes" @bind-Value="Input.Mes" class="form-control" />
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="row m-1">
+                <div class="col-md-12">
+                    <div class="align-content-center">
+                        <button type="submit" class="btn btn-primary btn-lg">Consultar</button>
+                    </div>
+                </div>
+            </div>
+
+        </EditForm>
+    </div>
+
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Proprietário</th>
+                <th>Qt. Viagens</th>
+                <th>Faturamento</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Dados)
+            {
+                <tr>
+                    <td>@item.NomeProprietario</td>
+                    <td>@item.QuantidadeViagem</td>
+                    <td>@item.Faturamento</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IList<TopFaturamentoReport>? Dados { get; set; } 
+
+    [Inject]
+    private IReportServices ReportServices { get; set; }
+
+    private PeriodoMesAnoInput Input { get; set; } = new PeriodoMesAnoInput(2022, 10);
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        Dados = await ReportServices.TopFaturamento(Input);
+    }
+
+    private async void HandleValidSubmit()
+    {
+        //Dados = null;
+        Dados = await ReportServices.TopFaturamento(Input);
+    }
+}
